@@ -94,7 +94,7 @@ const Profile = () => {
     if (!userId) return;
     try {
       const response = await deleteUser(userId);
-      toast.success("User deleted successfully!");
+      toast.success("Account deleted successfully!");
       setUserDetails(null); // Clear the UI
       setQuizDetails([]);
 
@@ -218,7 +218,7 @@ const Profile = () => {
           className="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition"
           onClick={handleDeleteUser}
         >
-          Delete User
+          Delete Account
         </button>
       </div>
     </section>
