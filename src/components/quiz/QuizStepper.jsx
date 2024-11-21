@@ -197,6 +197,6 @@ const QuizStepper = () => {
 export default QuizStepper;
 
 
-export default QuizStepper;
+
 
 
