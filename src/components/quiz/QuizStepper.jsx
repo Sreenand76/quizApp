@@ -7,7 +7,7 @@ const QuizStepper = () => {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedNumQuestions, setSelectedNumQuestions] = useState("");
   const [subjects, setSubjects] = useState([]);
-  const [timerEnabled, setTimerEnabled] = useState(false); // State for timer toggle
+  const [timerEnabled, setTimerEnabled] = useState(true); // State for timer toggle
   const [errorMessage, setErrorMessage] = useState(""); // State for error message
   const navigate = useNavigate();
 
@@ -124,9 +124,9 @@ const QuizStepper = () => {
               <button
                 className={`${
                   timerEnabled
-                    ? "bg-gradient-to-r from-red-400 to-red-500 hover:from-red-600 hover:to-red-700"
-                    : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500"
-                } text-white text-sm font-medium py-2 px-6 rounded-lg shadow-md transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500`}
+                    ? "bg-gradient-to-r from-red-500 to-red-600 "
+                    : "bg-gradient-to-r from-blue-500 to-blue-600  "
+                } text-white text-xs font-medium py-2 px-6 rounded-lg shadow-md transition-all transform hover:scale-105 focus:outline-none ring-2 ring-offset-2 ring-red-500`}
                 onClick={toggleTimer}
               >
                 {timerEnabled ? "Disable Timer" : "Enable Timer (1 min/qn)"}
@@ -193,6 +193,9 @@ const QuizStepper = () => {
     </section>
   );
 };
+
+export default QuizStepper;
+
 
 export default QuizStepper;
 
