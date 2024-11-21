@@ -106,7 +106,7 @@ const Profile = () => {
     }
   };
 
-  if (!userDetails) {
+  if (!userDetails||quizDetails.length === 0) {
     return <div className="flex flex-col items-center mb-10 mt-20">
       <div className="relative mb-6">
         <div className="w-40 h-40 bg-gray-300 rounded-full animate-pulse"></div>
