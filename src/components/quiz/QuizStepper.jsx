@@ -125,7 +125,7 @@ const QuizStepper = () => {
                 className={`${
                   timerEnabled
                     ? "bg-gradient-to-r from-red-400 to-red-500 hover:from-red-600 hover:to-red-700"
-                    : "bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-400 hover:to-gray-500"
+                    : "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-400 hover:to-blue-500"
                 } text-white text-sm font-medium py-2 px-6 rounded-lg shadow-md transition-all transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500`}
                 onClick={toggleTimer}
               >
