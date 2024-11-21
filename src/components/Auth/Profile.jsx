@@ -14,8 +14,9 @@ const Profile = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [quizDetails, setQuizDetails] = useState([]);
   const [chartData, setChartData] = useState({});
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
-  const auth=useContext(AuthContext);
+  const auth = useContext(AuthContext);
 
   useEffect(() => {
     fetchUserDetailsAndActivity();
@@ -28,7 +29,6 @@ const Profile = () => {
       setUserDetails(userDetailsResponse);
 
       const quizDetailsResponse = await getUserPreviousAttemptsDetail(email);
-
       // Sort quiz attempts by 'attemptDate' (most recent first)
       const sortedQuizDetails = quizDetailsResponse.sort((a, b) => {
         const dateA = new Date(a.attemptDate);
@@ -68,6 +68,8 @@ const Profile = () => {
       setChartData(chartData);
     } catch (error) {
       console.error("Error fetching user details or quiz attempts:", error);
+    } finally {
+      setLoading(false);  
     }
   };
 
@@ -85,6 +87,7 @@ const Profile = () => {
 
     return `${day}-${month}-${year}`;
   };
+
   const handleDeleteUser = async () => {
     const userId = userDetails?.email;
     console.log(userId)
@@ -94,11 +97,10 @@ const Profile = () => {
       toast.success("User deleted successfully!");
       setUserDetails(null); // Clear the UI
       setQuizDetails([]);
-      
+
       if (response === "User deleted successfully") {
-        
         auth.handleLogout();
-        navigate("/")
+        navigate("/");
       }
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -106,18 +108,20 @@ const Profile = () => {
     }
   };
 
-  if (!userDetails||quizDetails.length === 0) {
-    return <div className="flex flex-col items-center mb-10 mt-20">
-      <div className="relative mb-6">
-        <div className="w-40 h-40 bg-gray-300 rounded-full animate-pulse"></div>
+  
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center mb-10 mt-20">
+        <div className="relative mb-6">
+          <div className="w-40 h-40 bg-gray-300 rounded-full animate-pulse"></div>
+        </div>
+        <div>Loading User Details...</div>
+        <div className="text-center">
+          <div className="w-32 h-6 bg-gray-300 mb-2 animate-pulse"></div>
+          <div className="w-48 h-5 bg-gray-300 animate-pulse"></div>
+        </div>
       </div>
-      Loading User Details...
-      <div className="text-center">
-        <div className="w-32 h-6 bg-gray-300 mb-2 animate-pulse"></div>
-        <div className="w-48 h-5 bg-gray-300 animate-pulse"></div>
-      </div>
-    </div>
-
+    );
   }
 
   return (
@@ -147,7 +151,7 @@ const Profile = () => {
       {/* Chart for Subjects Performance */}
       <div className="mb-10 mt-10">
         <h3 className="text-lg md:text-2xl font-normal text-gray-500 mb-4">Subject-wise Performance</h3>
-        {chartData.labels ? (
+        {quizDetails.length > 0 ? (
           <Bar data={chartData} options={{ responsive: true }} />
         ) : (
           <p className="text-gray-500">No quiz attempts data available for chart.</p>
@@ -164,58 +168,65 @@ const Profile = () => {
       {/* Responsive Quiz Details */}
       {quizDetails.length > 0 ? (
         <>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quizDetails.map((quiz, index) => {
-            const percentage = Math.round((quiz.correctAnswer / quiz.totalQns) * 100);
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {quizDetails.map((quiz, index) => {
+              const percentage = Math.round((quiz.correctAnswer / quiz.totalQns) * 100);
 
-            return (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-lg p-5 hover:shadow-xl transition-shadow relative flex flex-col"
-              >
-                <div className="text-lg font-semibold text-gray-700 mb-2">
-                  <span className="block">Subject: {quiz.subject}</span>
-                </div>
-                <div className="text-sm text-gray-600 mb-1">
-                  <span className="font-bold">Date:</span> {formatDate(quiz.attemptDate)}
-                </div>
-                <div className="text-sm text-gray-600 mb-1">
-                  <span className="font-bold">Correct Answers:</span> {quiz.correctAnswer}
-                </div>
-                <div className="text-sm text-gray-600">
-                  <span className="font-bold">Total Questions:</span> {quiz.totalQns}
-                </div>
+              return (
+                <div
+                  key={index}
+                  className="bg-white rounded-lg shadow-lg p-5 hover:shadow-xl transition-shadow relative flex flex-col"
+                >
+                  <div className="text-lg font-semibold text-gray-700 mb-2">
+                    <span className="block">Subject: {quiz.subject}</span>
+                  </div>
+                  <div className="text-sm text-gray-600 mb-1">
+                    <span className="font-bold">Date:</span> {formatDate(quiz.attemptDate)}
+                  </div>
+                  <div className="text-sm text-gray-600 mb-1">
+                    <span className="font-bold">Correct Answers:</span> {quiz.correctAnswer}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    <span className="font-bold">Total Questions:</span> {quiz.totalQns}
+                  </div>
 
-                {/* Progress Wheel */}
-                <div className="absolute top-1/2 right-5 transform -translate-y-1/2 w-20 h-20">
-                  <CircularProgressbar
-                    value={percentage}
-                    text={`${percentage}%`}
-                    styles={buildStyles({
-                      textSize: "24px",
-                      textColor: "#3b82f6",
-                      pathColor: "#3b82f6",
-                      trailColor: "#d1d5db",
-                    })}
-                  />
+                  {/* Progress Wheel */}
+                  <div className="absolute top-1/2 right-5 transform -translate-y-1/2 w-20 h-20">
+                    <CircularProgressbar
+                      value={percentage}
+                      text={`${percentage}%`}
+                      styles={buildStyles({
+                        textSize: "24px",
+                        textColor: "#3b82f6",
+                        pathColor: "#3b82f6",
+                        trailColor: "#d1d5db",
+                      })}
+                    />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-        <div className="flex w-full justify-center my-8">
-        <button className="bg-red-500 text-white p-2 rounded-md" onClick={handleDeleteUser}>Delete Account</button>
-      </div>
-      </>
+              );
+            })}
+          </div>
+        </>
       ) : (
-        <p className="text-gray-500 text-center mt-6">No quiz attempts found.</p>
+        <div className="text-center text-gray-500 mt-6">No quiz attempts available.</div>
       )}
-      
+
+      {/* Delete User Button */}
+      <div className="mt-10 text-center">
+        <button
+          className="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition"
+          onClick={handleDeleteUser}
+        >
+          Delete User
+        </button>
+      </div>
     </section>
   );
 };
 
 export default Profile;
+
 
 
 
