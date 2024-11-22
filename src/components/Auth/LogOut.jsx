@@ -25,7 +25,7 @@ const LogOut = () => {
     <>
       {/* Logout confirmation modal */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-3">
           <div className="bg-white rounded-lg w-96">
             <div className="flex justify-between items-center p-4 border-b">
               <h5 className="text-lg font-semibold">Confirm Logout</h5>
