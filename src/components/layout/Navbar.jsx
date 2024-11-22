@@ -70,6 +70,7 @@ const Navbar = () => {
                       <Link
                         to="/profile"
                         className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-200"
+                        onClick={handleAccountClick}
                       >
                         <FaUser className="inline mr-2" />
                         Profile
@@ -77,7 +78,9 @@ const Navbar = () => {
                     </li>
                     <li>
                       {isLoggedIn && userRole === 'ROLE_ADMIN' && (
-                        <Link to="/admin" className="text-gray-700 hover:bg-gray-200 transition-all duration-200">
+                        <Link to="/admin" className="text-gray-700 hover:bg-gray-200 transition-all duration-200"
+                          onClick={handleAccountClick}
+                          >
                           <FaCog className='inline ml-4 mr-2'/>
                           Admin Panel
                         </Link>
