@@ -55,7 +55,10 @@ const Navbar = () => {
                     <Link
                       to="/login"
                       className="block px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-200"
-                      onClick={handleLogin}
+                      onClick={() => {
+                        handleLogin();
+                        handleAccountClick();
+                      }}
                     >
                       <FaSignInAlt className="inline mr-2" />
                       Login
@@ -83,6 +86,7 @@ const Navbar = () => {
                     <li>
                       <Link
                         to={"/logout"}
+                        onClick={handleAccountClick}
                         className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200 rounded-lg transition-all duration-200"
                       >
                         <FaSignOutAlt className="inline mr-2" /> Logout
