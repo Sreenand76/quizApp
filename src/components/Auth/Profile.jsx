@@ -14,7 +14,8 @@ const Profile = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [quizDetails, setQuizDetails] = useState([]);
   const [chartData, setChartData] = useState({});
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // Modal visibility state
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
 
@@ -69,7 +70,7 @@ const Profile = () => {
     } catch (error) {
       console.error("Error fetching user details or quiz attempts:", error);
     } finally {
-      setLoading(false);  
+      setLoading(false);
     }
   };
 
@@ -90,7 +91,6 @@ const Profile = () => {
 
   const handleDeleteUser = async () => {
     const userId = userDetails?.email;
-    console.log(userId)
     if (!userId) return;
     try {
       const response = await deleteUser(userId);
@@ -108,7 +108,15 @@ const Profile = () => {
     }
   };
 
-  
+  const handleConfirmDelete = () => {
+    handleDeleteUser();
+    setShowDeleteModal(false); // Close the modal after confirmation
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false); // Close the modal if user cancels
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center mb-10 mt-20">
@@ -149,10 +157,25 @@ const Profile = () => {
       <hr className="border-t border-gray-300" />
 
       {/* Chart for Subjects Performance */}
-      <div className="mb-10 mt-10">
-        <h3 className="text-lg md:text-2xl font-normal text-gray-500 mb-4">Subject-wise Performance</h3>
+      <div className="w-full mb-10 mt-10 ">
+        <h3 className="text-lg md:text-2xl font-normal text-gray-500 mb-4 text-center">Subject-wise Performance</h3>
         {quizDetails.length > 0 ? (
-          <Bar data={chartData} options={{ responsive: true }} />
+          <div className=" sm:h-30 md:h-96 lg:h-112 xl:h-128 flex flex-col items-center">
+          <Bar
+            data={chartData}
+            options={{
+              scales: {
+                y: {
+                  ticks: {
+                    stepSize: 20,
+                    min: 0,
+                    max: 100,
+                  },
+                },
+              },
+            }}
+          />
+          </div>
         ) : (
           <p className="text-gray-500">No quiz attempts data available for chart.</p>
         )}
@@ -196,10 +219,10 @@ const Profile = () => {
                       value={percentage}
                       text={`${percentage}%`}
                       styles={buildStyles({
-                        textSize: "24px",
-                        textColor: "#3b82f6",
-                        pathColor: "#3b82f6",
-                        trailColor: "#d1d5db",
+                        textSize: "16px",
+                        pathColor: percentage > 50 ? "#4caf50" : "#f44336",
+                        textColor: "#000",
+                        trailColor: "#f4f4f4",
                       })}
                     />
                   </div>
@@ -209,23 +232,48 @@ const Profile = () => {
           </div>
         </>
       ) : (
-        <div className="text-center text-gray-500 mt-6">No quiz attempts available.</div>
+        <div className="text-center text-gray-600">No quiz data available.</div>
       )}
 
-      {/* Delete User Button */}
-      <div className="mt-10 text-center">
+      {/* Delete Account Button */}
+      <div className="text-center mt-10">
         <button
-          className="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition"
-          onClick={handleDeleteUser}
+          className="bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600 transition-colors"
+          onClick={() => setShowDeleteModal(true)} // Show modal on click
         >
           Delete Account
         </button>
       </div>
+
+      {/* Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50 p-5">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
+            <h4 className="text-xl font-semibold text-gray-700 mb-4">Are you sure you want to delete your account?</h4>
+            <div className="flex justify-between">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                onClick={handleConfirmDelete}
+              >
+                Confirm
+              </button>
+              <button
+                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+                onClick={handleCancelDelete}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
 
 export default Profile;
+
+
 
 
 
