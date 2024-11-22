@@ -25,8 +25,8 @@ const QuizStepper = () => {
   };
 
   const handleNext = () => {
-    if (currentStep === 2 && selectedNumQuestions > 100) {
-      setErrorMessage("The maximum number of questions available is 100.");
+    if (currentStep === 2 && selectedNumQuestions > 50) {
+      setErrorMessage("The maximum number of questions available is 50.");
       return;
     }
     setErrorMessage("");
@@ -56,8 +56,8 @@ const QuizStepper = () => {
   const handleNumQuestionsChange = (event) => {
     const value = event.target.value;
     setSelectedNumQuestions(value);
-    if (value > 100) {
-      setErrorMessage("The maximum number of questions available is 100.");
+    if (value > 50) {
+      setErrorMessage("The maximum number of questions available is 50.");
     } else {
       setErrorMessage("");
     }
@@ -174,7 +174,7 @@ const QuizStepper = () => {
               onClick={handleNext}
               disabled={
                 (currentStep === 1 && !selectedSubject) ||
-                (currentStep === 2 && (!selectedNumQuestions || selectedNumQuestions > 100))
+                (currentStep === 2 && (!selectedNumQuestions || selectedNumQuestions > 50))
               }
             >
               Next
