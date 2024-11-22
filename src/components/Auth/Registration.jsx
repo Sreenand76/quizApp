@@ -13,7 +13,7 @@ const Registration = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setRegistration({ ...registration, [e.target.name]: e.target.value });
@@ -23,15 +23,14 @@ const Registration = () => {
     e.preventDefault();
     try {
       const result = await registerUser(registration);
-      setSuccessMessage(result);
+      setSuccessMessage(result.message); // assuming result has a message
       setErrorMessage("");
       setRegistration({ firstName: "", lastName: "", email: "", password: "" });
-      toast.success("Registration successfull")
-      navigate("/login"); 
-      
+      toast.success("Registration successful");
+      navigate("/login");
     } catch (error) {
       setSuccessMessage("");
-      setErrorMessage(`Registration error: ${error.message}`);
+      setErrorMessage(`Registration error: ${error.message || "An error occurred"}`);
     }
     setTimeout(() => {
       setErrorMessage("");
@@ -40,13 +39,17 @@ const Registration = () => {
   };
 
   return (
-    <section className="min-h-[90vh] flex  justify-center bg-gray-50">
-      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg max-h-[75vh] md:max-h-[70vh] mt-10">
-        {errorMessage && <p className="bg-red-100 text-red-700 p-2 rounded-md mb-4">{errorMessage}</p>}
-        {successMessage && <p className="bg-green-100 text-green-700 p-2 rounded-md mb-4">{successMessage}</p>}
+    <section className="flex justify-center p-3">
+      <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-lg  mt-10">
+        {errorMessage && (
+          <p className="bg-red-100 text-red-700 p-2 rounded-md mb-4">{errorMessage}</p>
+        )}
+        {successMessage && (
+          <p className="bg-green-100 text-green-700 p-2 rounded-md mb-4">{successMessage}</p>
+        )}
 
         <h2 className="text-2xl font-semibold text-gray-800 text-center mb-6">Register</h2>
-        
+
         <form onSubmit={handleRegistration} className="space-y-6">
           {/* First Name */}
           <div>
