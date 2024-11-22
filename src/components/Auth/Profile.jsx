@@ -30,11 +30,9 @@ const Profile = () => {
       setUserDetails(userDetailsResponse);
 
       const quizDetailsResponse = await getUserPreviousAttemptsDetail(email);
-      // Sort quiz attempts by 'attemptDate' (most recent first)
+      // Sort quiz attempts by 'id'
       const sortedQuizDetails = quizDetailsResponse.sort((a, b) => {
-        const dateA = new Date(a.attemptDate);
-        const dateB = new Date(b.attemptDate);
-        return dateB - dateA;  // Ensure recent quiz attempts come first
+          return b.id - a.id;
       });
 
       setQuizDetails(sortedQuizDetails);
